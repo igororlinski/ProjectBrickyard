@@ -21,7 +21,7 @@ int main(int argc __attribute__((unused)), char *argv[]) {
             usleep(random_time);
         }
         if (upper_limit - lower_limit < workerId) {
-            printf("\033[38;5;116m[P] \033[38;5;88mPracownik\033[0m \033[38;5;%dmP%d\033[0m\033[38;5;88m załadował wszystkie dostępne cegły i kończy pracę.\033[0m\n", 18 + workerId + (workerId - 1)*11, workerId);
+            printf("\033[38;5;116m[P] \033[38;5;88mThe worker number\033[0m \033[38;5;%dmP%d\033[0m\033[38;5;88m has used all the available bircks and has finished their work.\033[0m\n", 18 + workerId + (workerId - 1)*11, workerId);
 
             struct MsgBuffer msg;
             msg.mtype = 1;
@@ -55,10 +55,10 @@ int tryAddingBrick(int workerId, ConveyorBelt* conveyor, char* storage, int lowe
     struct sembuf op_weight = {0, -brick_weight, 0};
 
     if(semctl(semid_conveyor_capacity, 0, GETVAL) == 0) {
-        printf("\033[38;5;116m[P] \033[38;5;109mPracownik\033[0m \033[38;5;%dmP%d\033[0m \033[38;5;109mczeka na dodanie cegły o wadze\033[0m %d\033[38;5;109m na taśmę z powodu zapełnienia taśmy.\033[0m\n", 18 + workerId + (workerId - 1)*11, workerId, brick_weight);
+        printf("\033[38;5;116m[P] \033[38;5;109mWorker number\033[0m \033[38;5;%dmP%d\033[0m \033[38;5;109mis waiting to add a brick with the weight of\033[0m %d\033[38;5;109m to the conveyor belt beacause it's overfilled.\033[0m\n", 18 + workerId + (workerId - 1)*11, workerId, brick_weight);
     }
     else if(semctl(semid_weight_capacity, 0, GETVAL) < brick_weight) {
-          printf("\033[38;5;116m[P] \033[38;5;109mPracownik\033[0m \033[38;5;%dmP%d\033[0m \033[38;5;109mczeka na dodanie cegły o wadze\033[0m %d\033[38;5;109m na taśmę z powodu przeciążenia taśmy.\033[0m\n", 18 + workerId + (workerId - 1)*11, workerId, brick_weight);
+          printf("\033[38;5;116m[P] \033[38;5;109mWorker number\033[0m \033[38;5;%dmP%d\033[0m \033[38;5;109mis waiting to add a brick with the weight o\033[0m %d\033[38;5;109m to the conveyor belt beacause it's overfilled.\033[0m\n", 18 + workerId + (workerId - 1)*11, workerId, brick_weight);
     }
     
     if (semop(semid_add_brick, &p, 1) == -1) {
@@ -149,7 +149,7 @@ void addBrick(ConveyorBelt* q, int workerId, Brick* brick) {
     brick->ad = get_current_time();
 
     q->bricks[q->rear] = *brick;
-    printf("\033[38;5;70m[+] \033[38;5;242mPracownik \033[38;5;%dmP%d\033[0m \033[38;5;242mdodał cegłę o wadze\033[0m %d \033[38;5;242mna taśmę. ID cegły:\033[0m %d\033[38;5;242m        Liczba cegieł na taśmie:\033[0m %d\033[38;5;88m/\033[0m%d\033[38;5;242m       Łączna waga cegieł na taśmie:\033[0m %d\033[38;5;88m/\033[0m%d\n", 18 + workerId + (workerId - 1)*11, workerId, getBrickWeight(brick), brick->id, MAX_CONVEYOR_BRICKS_NUMBER - semctl(semid_conveyor_capacity, 0, GETVAL), MAX_CONVEYOR_BRICKS_NUMBER, MAX_CONVEYOR_BRICKS_WEIGHT - semctl(semid_weight_capacity, 0, GETVAL), MAX_CONVEYOR_BRICKS_WEIGHT);
+    printf("\033[38;5;70m[+] \033[38;5;242mWorker number \033[38;5;%dmP%d\033[0m \033[38;5;242mhas added a brick with the weight of\033[0m %d \033[38;5;242mto the conveyor belt. Brick's ID:\033[0m %d\033[38;5;242m        Number of bricks on the conveyor belt:\033[0m %d\033[38;5;88m/\033[0m%d\033[38;5;242m       Total weight of the bricks on the conveyor belt:\033[0m %d\033[38;5;88m/\033[0m%d\n", 18 + workerId + (workerId - 1)*11, workerId, getBrickWeight(brick), brick->id, MAX_CONVEYOR_BRICKS_NUMBER - semctl(semid_conveyor_capacity, 0, GETVAL), MAX_CONVEYOR_BRICKS_NUMBER, MAX_CONVEYOR_BRICKS_WEIGHT - semctl(semid_weight_capacity, 0, GETVAL), MAX_CONVEYOR_BRICKS_WEIGHT);
 
     semop(semid_add_brick, &v, 1);
 }

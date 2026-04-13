@@ -24,14 +24,14 @@ int main() {
         if (get_truck(truck_queue, truck_queue->front, sharedTrucks) == NULL) {
             if (get_truck(truck_queue, truck_queue->rear, sharedTrucks) == NULL) {
                 pthread_mutex_lock(&conveyor->mutex);
-                printf("\033[38;5;136m[T] \033[38;5;88mBrak ciężarówek w fabryce, taśma zostaje wstrzymana.\033[0m\n");
+                printf("\033[38;5;136m[T] \033[38;5;88mNo trucks in the factory, the conveyor belt is being stopped.\033[0m\n");
                 while (get_truck(truck_queue, truck_queue->front, sharedTrucks) == NULL && get_truck(truck_queue, truck_queue->rear, sharedTrucks) == NULL) {
                     pthread_cond_wait(&truck_queue->cond, &truck_queue->mutex);
                 }
                 pthread_mutex_unlock(&conveyor->mutex);
             }
             else {
-            printf("\033[38;5;136m[T] \033[38;5;88mNowa ciężarówka nie została jeszcze podstawiona.\033[0m\n");
+            printf("\033[38;5;136m[T] \033[38;5;88mA new truck has not arrived yet.\033[0m\n");
             pthread_mutex_unlock(&truck_queue->mutex);
             continue;
             }

@@ -29,7 +29,7 @@ void removeBrick(ConveyorBelt* q) {
     struct sembuf op;
 
     if (semctl(semid_conveyor_capacity, 0, GETVAL)  == MAX_CONVEYOR_BRICKS_NUMBER) {
-        printf("\033[38;5;90m[C] \033[38;5;136mTaśma jest pusta!\033[0m\n");
+        printf("\033[38;5;90m[C] \033[38;5;136mThe conveyor belt is already full!\033[0m\n");
         pthread_mutex_unlock(&q->mutex);
         return;
     }
@@ -47,7 +47,7 @@ void removeBrick(ConveyorBelt* q) {
         break;
     }
     }
-    printf("\033[38;5;124m[-] \033[38;5;242mCegła o wadze\033[0m %d\033[38;5;242m wpada do ciężarówki nr\033[0m %d\033[38;5;242m. Zapełnienie ciężarówki:\033[0m %d\033[38;5;88m/\033[0m%d\033[38;5;242m. ID cegły:\033[0m %d\n", brick_weight, assigned_truck->id, assigned_truck->current_weight, assigned_truck->max_capacity, brick_id);
+    printf("\033[38;5;124m[-] \033[38;5;242mBrick with the weight class of\033[0m %d\033[38;5;242m fell into the truck number\033[0m %d\033[38;5;242m. Truck's used capacity:\033[0m %d\033[38;5;88m/\033[0m%d\033[38;5;242m. Brick ID:\033[0m %d\n", brick_weight, assigned_truck->id, assigned_truck->current_weight, assigned_truck->max_capacity, brick_id);
     q->front = (q->front + 1) % MAX_CONVEYOR_BRICKS_NUMBER;
     pthread_mutex_unlock(&q->mutex);
     if (semop(semid_conveyor_capacity, &v, 1) == -1) {
